@@ -1,13 +1,24 @@
 {
-  "name": "model-validate",
+  "name": "angular-model-validate",
   "private": true,
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "jasmine-node ./tests",
-    "install": "bower install"
+  "version": "0.0.1",
+  "description": "Model based validations",
+  "author": "Pavel Dobrev",
+  "directories": {
+    "example": "examples"
   },
-  "author": "Pavel Dobrev"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robbflynn/angular-model-validate.git"
+  },
+  "keywords": [
+    "angular",
+    "model",
+    "validations"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/robbflynn/angular-model-validate/issues"
+  },
+  "homepage": "https://github.com/robbflynn/angular-model-validate"
 }
