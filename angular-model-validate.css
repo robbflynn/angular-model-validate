@@ -1,0 +1,12 @@
+.validation-invalid {
+  color: #E30000;
+}
+
+input.has-error, textarea.has-error {
+  border: 1px solid #DE0000;
+}
+
+input.has-error:focus, textarea.has-error:focus {
+  border: 1px solid #DE0000;
+  box-shadow: 0 0 10px #CD0000;
+}

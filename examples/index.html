@@ -1,0 +1,133 @@
+<html ng-app="model-validate">
+  <head>
+    <title>Model validate</title>
+    <link rel="stylesheet" href="/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/angular-model-validate.css">
+
+  </head>
+  <body ng-controller="ExampleController">
+    <div class="container">
+      <h1>Model validate</h1>
+      <hr>
+      <form name="myForm" class="form-horizontal" novalidate mv-validate-on="change,submit,blur" mv-show-all-errors>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">* Required field</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.name" mv-required mv-validate-on="submit">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Email 1</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control"  ng-model="data.email" mv-email mv-string mv-min-chars="10" mv-required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label" ng-model="data.email" mv-email mv-required>Email 1</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.email" mv-email mv-required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Email 2</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control"  ng-model="data.email" mv-email>
+          </div>
+        </div>
+
+        <div class="form-group" ng-if="!!data.email">
+          <label class="col-sm-3 control-label">* Phone</label>
+          <div class="col-sm-9">
+            <textarea class="form-control" ng-model="data.phone" mv-phone mv-required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Url</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.url" mv-url>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Number</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.number" mv-number mv-min="5.1" mv-max="15.5">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Integer</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.integer" mv-number="integer" mv-min="1">
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Chars</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.chars" mv-string mv-min-chars="2" mv-max-chars="10">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Words</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.words" mv-string mv-min-words="2" mv-max-words="10">
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Password</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.password" mv-required mv-equal="data.rpassword">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Repeat password</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.rpassword" mv-required mv-equal="data.password">
+          </div>
+        </div>
+
+        <hr>
+
+        <!--div class="form-group">
+          <label class="col-sm-3 control-label">Function 1</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.func1" mv-phone mv-function="func1()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 2</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-models="data.phone,data.email" mv-function="func2()">
+          </div>
+        </div-->
+
+        <hr>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" ng-click="reset()" class="btn btn-primary">Reset</button>
+            <button type="submit" mv-submit class="btn btn-primary" ng-click="submit()">Submit</button>
+          </div>
+        </div>
+
+      </form>
+      {{data | json}}
+    </div>
+    <script src="/vendor/jquery.min.js"></script>
+    <script src="/vendor/angular.js"></script>
+    <script src="index.js"></script>
+    <script src="/angular-model-validate.js"></script>
+  </body>
+</html>

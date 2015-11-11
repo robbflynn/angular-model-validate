@@ -1,0 +1,13 @@
+{
+  "name": "model-validate",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jasmine-node ./tests",
+    "install": "bower install"
+  },
+  "author": "Pavel Dobrev"
+}
