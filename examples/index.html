@@ -9,76 +9,66 @@
     <div class="container">
       <h1>Model validate</h1>
       <hr>
-      <form name="myForm" class="form-horizontal" novalidate mv-validate-on="change,submit,blur" mv-show-all-errors>
+      <form name="myForm" class="form-horizontal" novalidate mv-validate-on="change,blur,submit">
 
-        <div class="form-group">
-          <label class="col-sm-3 control-label">* Required field</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.name" mv-required mv-validate-on="submit">
-          </div>
-        </div>
-
-        <div class="form-group">
+        <div class="form-group" ng-model="data.email1" mv="email,required">
           <label class="col-sm-3 control-label">Email 1</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control"  ng-model="data.email" mv-email mv-string mv-min-chars="10" mv-required>
+            <input type="text" class="form-control" ng-model="data.email1">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label" ng-model="data.email" mv-email mv-required>Email 1</label>
+          <label class="col-sm-3 control-label">String chars</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.email" mv-email mv-required>
+            <input type="text" class="form-control" ng-model="data.string1" mv="string,required" 
+                   mv-max-chars="20"
+                   mv-string-max-chars-error="Max [MAX]" 
+                   mv-string-min-chars-error="Min [MIN]"
+                   mv-string-chars-range-error="Range [MIN] and [MAX]"
+                   >
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Email 2</label>
+          <label class="col-sm-3 control-label">String words</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control"  ng-model="data.email" mv-email>
-          </div>
-        </div>
-
-        <div class="form-group" ng-if="!!data.email">
-          <label class="col-sm-3 control-label">* Phone</label>
-          <div class="col-sm-9">
-            <textarea class="form-control" ng-model="data.phone" mv-phone mv-required></textarea>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Url</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.url" mv-url>
+            <input type="text" class="form-control" ng-model="data.string2" mv="string,required" 
+                   mv-min-words="2" mv-max-words="4">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-3 control-label">Number</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.number" mv-number mv-min="5.1" mv-max="15.5">
+            <input type="text" class="form-control" ng-model="data.number" mv="number,required" 
+                   mv-min="2" mv-max="4"
+                   mv-number-invalid-error="Invalid man."
+                   mv-number-min-error="Min [MIN]"
+                   mv-number-max-error="Max [MAX]">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-3 control-label">Integer</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.integer" mv-number="integer" mv-min="1">
-          </div>
-        </div>
-
-
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Chars</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.chars" mv-string mv-min-chars="2" mv-max-chars="10">
+            <input type="text" class="form-control" ng-model="data.integer" mv="number,required" 
+                   mv-min="2" mv-max="14"
+                   mv-number-range-error="Min [MIN] to [MAX]">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Words</label>
+          <label class="col-sm-3 control-label">Url</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.words" mv-string mv-min-words="2" mv-max-words="10">
+            <input type="text" class="form-control" ng-model="data.url" mv="url,required">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Phone</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.phone" mv="phone,required">
           </div>
         </div>
 
@@ -87,32 +77,42 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">Password</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.password" mv-required mv-equal="data.rpassword">
+            <input type="text" class="form-control" ng-model="data.password" mv="required">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-3 control-label">Repeat password</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.rpassword" mv-required mv-equal="data.password">
+            <input type="text" class="form-control" ng-model="data.rpassword" mv="equal,required" mv-equal="data.password">
           </div>
         </div>
 
         <hr>
 
-        <!--div class="form-group">
+        <div class="form-group">
           <label class="col-sm-3 control-label">Function 1</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.func1" mv-phone mv-function="func1()">
+            <input type="text" class="form-control" ng-model="data.function1" mv="function" mv-function="func1()">
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-3 control-label">Function 2</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-models="data.phone,data.email" mv-function="func2()">
+            <input type="text" class="form-control" ng-model="data.function2" mv="function" mv-function="func2">
           </div>
-        </div-->
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 3</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.function3" mv="function" mv-function="func3()">
+          </div>
+        </div>
+
+        <span ng-models="data.function1,data.function2,data.function3" mv="function" mv-function="func4">Func4</span>
+        <span ng-models="data.function1,data.function2,data.function3" mv="function" mv-function="func5" mv-function-error="Shit man">Async Func5</span>
 
         <hr>
         <div class="form-group">

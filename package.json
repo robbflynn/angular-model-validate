@@ -14,10 +14,10 @@
   "keywords": [
     "angular",
     "model",
-    "validation",
-    "validations",
+    "valid",
     "validate",
-    "valid"
+    "validation",
+    "validations"
   ],
   "license": "MIT",
   "bugs": {
