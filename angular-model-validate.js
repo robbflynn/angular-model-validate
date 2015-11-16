@@ -1,11 +1,13 @@
 (function () {
   'use strict';
 
-  var mv = angular.module('modelValidate', []);
+  var mv = angular.module('modelValidate', [])
 
-  var $injector = angular.injector(['ng']);
+  var $injector = angular.injector(['ng'])
   var $parse = $injector.get('$parse')
   var $timeout = $injector.get('$timeout')
+
+  var TAGS = ["INPUT", "TEXTAREA"]
 
   var ModelState = function(model) {
     this.model = model
@@ -392,6 +394,155 @@
     }
   })
 
+  mv.directive("mv", [ '$parse', '$modelValidate',
+    function ($parse, $modelValidate) {
+      return {
+        restrict: "A",
+        require: ['^form', "mv", "?ngModel", "?ngModels"],
+        link: function (scope, element, attrs, ctrls) {
+          var form = ctrls[0]
+          var mv = ctrls[1]
+          var ngModel = ctrls[2]
+          var ngModels = ctrls[3]
+          var validators = []
+
+          attrs.$observe("mv", function() {
+            var validatorNames = attrs.mv.split(" ").join("").split(",")
+            for (var i = 0; i < validatorNames.length; i++) {
+              var options = $modelValidate.getConfiguration(validatorNames[i])
+              if (options) {
+                var validator = new Validator(validatorNames[i], scope, element, attrs, form, ngModel, ngModels, options)
+                validators.push(validator)  
+              }
+            }
+          })
+        },
+        controller: function() { }
+      }
+    }
+  ]);
+
+  mv.directive("form", [function () {
+      return {
+        restrict: "E",
+        priority: 1,
+        require: "form",
+        compile: function compile(tElement, tAttrs, transclude) {
+          return {
+            pre: function preLink(scope, iElement, iAttrs, form) {
+              if (!form.$modelValidate) {
+                form.$modelValidate = {
+                  models: {},
+                  reset: function() {
+                    form.$setPristine()
+
+                    for (var key in this.models)
+                      this.models[key].reset()
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ])
+
+  mv.directive("ngModel", [ '$parse', '$timeout',
+    function ($parse, $timeout) {
+      return {
+        restrict: "A",
+        priority: 1,
+        require: ["ngModel", "^form"],
+        link: function (scope, element, attrs, ctrls) {
+          var ngModel = ctrls[0]
+          var form = ctrls[1]
+
+          $timeout(function() {
+            var modelState = form.$modelValidate.models[attrs.ngModel]
+
+            if (modelState && TAGS.indexOf(element.prop("tagName")) != -1) {
+              if (modelState.validateOn.change) {
+                element.on("keydown", function(val) {
+                  modelState.touch()
+                })
+              }
+
+              if (modelState.validateOn.blur) {
+                element.on("blur", function() {
+                  modelState.blur()
+                })
+              }
+            }
+          })
+        }
+      }
+    }
+  ])
+
+  mv.directive("ngModels", [ '$parse', '$timeout',
+    function ($parse, $timeout) {
+      return {
+        restrict: "A",
+        require: ["ngModels", "^form"],
+        link: function (scope, element, attrs, ctrls) {
+          var ngModels = ctrls[0]
+          var form = ctrls[1]
+
+          attrs.$observe("ngModels", function() {
+            var modelsState = form.$modelValidate.models[attrs.ngModels]
+            var models = attrs.ngModels.split(" ").join("").split(",")
+
+            ngModels.$models = models
+            ngModels.$modelsValues = []
+
+            scope.$watchGroup(models, function(newValues) {
+              ngModels.$modelsValues = newValues
+            })
+          })
+        },
+        controller: function() { }
+      }
+    }
+  ]);
+
+  mv.directive("mvSubmit", [ '$parse', '$timeout',
+    function ($parse, $timeout) {
+      return {
+        restrict: "A",
+        link: function (scope, element, attrs) {
+          var form
+          if (attrs.mvTarget)
+            scope.$watch(attrs.mvTarget, function(f) { 
+              form = f 
+            })
+
+          element.bind("click", function() {
+            if (form) {
+              form.$setSubmitted()
+              form.$setDirty();
+              
+              if(!scope.$$phase) {
+                scope.$apply();
+              }
+
+              $timeout(function() {
+                $parse(attrs.mvSubmit)(scope)
+              })
+            } else
+              $timeout(function() {
+                $parse(attrs.mvSubmit)(scope)
+              })
+          })
+        }
+      }
+    }
+  ]);
+
+  // ******************************************************************************************
+  // *************************************** CONFIGURATION ************************************
+  // ******************************************************************************************
+
   mv.config(function($modelValidateProvider) {
     var defaultConfig = {
       required: {
@@ -540,152 +691,5 @@
 
     $modelValidateProvider.setConfiguration(defaultConfig)
   })
-
-  mv.directive("mv", [ '$parse', '$modelValidate',
-    function ($parse, $modelValidate) {
-      return {
-        restrict: "A",
-        require: ['^form', "mv", "?ngModel", "?ngModels"],
-        link: function (scope, element, attrs, ctrls) {
-          var form = ctrls[0]
-          var mv = ctrls[1]
-          var ngModel = ctrls[2]
-          var ngModels = ctrls[3]
-          var validators = []
-
-          attrs.$observe("mv", function() {
-            var validatorNames = attrs.mv.split(" ").join("").split(",")
-            for (var i = 0; i < validatorNames.length; i++) {
-              var options = $modelValidate.getConfiguration(validatorNames[i])
-              if (options) {
-                var validator = new Validator(validatorNames[i], scope, element, attrs, form, ngModel, ngModels, options)
-                validators.push(validator)  
-              }
-            }
-          })
-        },
-        controller: function() { }
-      }
-    }
-  ]);
-
-  mv.directive("form", [function () {
-      return {
-        restrict: "E",
-        priority: 1,
-        require: "form",
-        compile: function compile(tElement, tAttrs, transclude) {
-          return {
-            pre: function preLink(scope, iElement, iAttrs, form) {
-              if (!form.$modelValidate) {
-                form.$modelValidate = {
-                  models: {},
-                  reset: function() {
-                    form.$setPristine()
-
-                    for (var key in this.models)
-                      this.models[key].reset()
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  ])
-
-  var tags = ["INPUT", "TEXTAREA"]
-
-  mv.directive("ngModel", [ '$parse', '$timeout',
-    function ($parse, $timeout) {
-      return {
-        restrict: "A",
-        priority: 1,
-        require: ["ngModel", "^form"],
-        link: function (scope, element, attrs, ctrls) {
-          var ngModel = ctrls[0]
-          var form = ctrls[1]
-
-          $timeout(function() {
-            var modelState = form.$modelValidate.models[attrs.ngModel]
-
-            if (modelState && tags.indexOf(element.prop("tagName")) != -1) {
-              if (modelState.validateOn.change) {
-                element.on("keydown", function(val) {
-                  modelState.touch()
-                })
-              }
-
-              if (modelState.validateOn.blur) {
-                element.on("blur", function() {
-                  modelState.blur()
-                })
-              }
-            }
-          })
-        }
-      }
-    }
-  ])
-
-  mv.directive("ngModels", [ '$parse', '$timeout',
-    function ($parse, $timeout) {
-      return {
-        restrict: "A",
-        require: ["ngModels", "^form"],
-        link: function (scope, element, attrs, ctrls) {
-          var ngModels = ctrls[0]
-          var form = ctrls[1]
-
-          attrs.$observe("ngModels", function() {
-            var modelsState = form.$modelValidate.models[attrs.ngModels]
-            var models = attrs.ngModels.split(" ").join("").split(",")
-
-            ngModels.$models = models
-            ngModels.$modelsValues = []
-
-            scope.$watchGroup(models, function(newValues) {
-              ngModels.$modelsValues = newValues
-            })
-          })
-        },
-        controller: function() { }
-      }
-    }
-  ]);
-
-  mv.directive("mvSubmit", [ '$parse', '$timeout',
-    function ($parse, $timeout) {
-      return {
-        restrict: "A",
-        link: function (scope, element, attrs) {
-          var form
-          if (attrs.mvTarget)
-            scope.$watch(attrs.mvTarget, function(f) { 
-              form = f 
-            })
-
-          element.bind("click", function() {
-            if (form) {
-              form.$setSubmitted()
-              form.$setDirty();
-              
-              if(!scope.$$phase) {
-                scope.$apply();
-              }
-
-              $timeout(function() {
-                $parse(attrs.mvSubmit)(scope)
-              })
-            } else
-              $timeout(function() {
-                $parse(attrs.mvSubmit)(scope)
-              })
-          })
-        }
-      }
-    }
-  ]);
 
 })();
