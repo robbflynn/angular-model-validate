@@ -18,6 +18,13 @@
           </div>
         </div>
 
+        <div class="form-group" ng-if="data.email1">
+          <label class="col-sm-3 control-label">Phone</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.phone" mv="phone,required">
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="col-sm-3 control-label">String chars</label>
           <div class="col-sm-9">
@@ -65,12 +72,7 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Phone</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.phone" mv="phone,required">
-          </div>
-        </div>
+        
 
         <hr>
 

@@ -48,7 +48,7 @@
         this.validators.splice(index, 1)
 
       if (!this.validators.length)
-        delete self.form.$modelValidate.models[this.model]
+        delete v.form.$modelValidate.models[this.model]
     }
 
     this.attach = function(state) {
@@ -120,6 +120,7 @@
     this.validateOnSubmit = validateOn.indexOf("submit") != -1
     this.validateOnChange = validateOn.indexOf("change") != -1
     this.validateOnBlur = validateOn.indexOf("blur") != -1
+    this.validateOnInit = validateOn.indexOf("init") != -1
     this.showAllErrors = typeof attrs.mvShowAllErrors != "undefined" || !!element.closest("form[mv-show-all-errors]").length
     this.validateEmpty = options.validateEmpty || true
     this.validityName = options.validityName || name
@@ -170,7 +171,7 @@
 
     scope.$on("$destroy", function() {
       self.removeWatchers()
-
+      
       if (self.modelState)
         self.modelState.remove(self)
 
@@ -321,7 +322,17 @@
           element.$modelValidate.$errorsForRemove[i].remove()
         }
       }
-      
+
+      if (element.$modelValidate.$errors.length == 0 && element.hasClass("has-error"))
+        element.removeClass("has-error")
+      else if (element.$modelValidate.$errors.length != 0 && !element.hasClass("has-error"))
+        element.addClass("has-error")
+
+      element.$modelValidate.$timeout = null
+     
+       if (typeof attrs.mvNoErrorMessage !== "undefined")
+        return
+
       if (!self.showAllErrors) {
         if (element.$modelValidate.$errors.length && !element.$modelValidate.$errors[0].parent().length)
           $(element).after(element.$modelValidate.$errors[0])
@@ -331,13 +342,6 @@
             $(element).after(element.$modelValidate.$errors[i])
         }
       }
-
-      if (element.$modelValidate.$errors.length == 0 && element.hasClass("has-error"))
-        element.removeClass("has-error")
-      else if (element.$modelValidate.$errors.length != 0 && !element.hasClass("has-error"))
-        element.addClass("has-error")
-
-      element.$modelValidate.$timeout = null
     }
 
     this.addError = function() {
@@ -372,6 +376,14 @@
       this.setErrMessage(options.error)
 
     this.prepareWatchers()
+
+    if (this.validateOnInit) {
+      this.$validate.call(
+        this,
+        ngModel ? ngModel.$modelValue : null,
+        ngModels ? ngModels.$modelsValues : null
+      )
+    }
   }
 
   mv.provider('$modelValidate', function() {
@@ -461,17 +473,28 @@
           $timeout(function() {
             var modelState = form.$modelValidate.models[attrs.ngModel]
 
-            if (modelState && TAGS.indexOf(element.prop("tagName")) != -1) {
+            if (modelState) {
+
+              var blur = function() {
+                modelState.blur()
+              }
+
+              var touch = function() {
+                modelState.touch()
+              }
+
               if (modelState.validateOn.change) {
-                element.on("keydown", function(val) {
-                  modelState.touch()
-                })
+                if (TAGS.indexOf(element.prop("tagName")) != -1)
+                  element.on("keydown", touch)
+                else
+                  element.delegate("INPUT,TEXTAREA", "keyup", touch)
               }
 
               if (modelState.validateOn.blur) {
-                element.on("blur", function() {
-                  modelState.blur()
-                })
+                if (TAGS.indexOf(element.prop("tagName")) != -1)
+                  element.on("blur", blur)
+                else
+                  element.delegate("INPUT,TEXTAREA", "blur", blur)
               }
             }
           })
@@ -646,7 +669,6 @@
           var min = parseFloat($parse(this.attrs.mvMin)(this.scope))
           var max = parseFloat($parse(this.attrs.mvMax)(this.scope))
           var isInteger = this.attrs.mvType || "number"
-
 
           if (match) {
             if (!isNaN(min) && !isNaN(max) && modelValue < min  && modelValue > max) {
