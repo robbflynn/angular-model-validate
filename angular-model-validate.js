@@ -7,7 +7,7 @@
   var $parse = $injector.get('$parse')
   var $timeout = $injector.get('$timeout')
 
-  var TAGS = ["INPUT", "TEXTAREA"]
+  var INPUTS = ["INPUT", "TEXTAREA"]
 
   var ModelState = function(model) {
     this.model = model
@@ -113,7 +113,7 @@
     this.form = form
     this.ngModel = ngModel
     this.ngModels = ngModels
-    this.options = options
+    this.options = angular.copy(options)
 
     var validateOn = attrs.mvValidateOn || element.closest("form").attr("mv-validate-on") || "submit"
 
@@ -222,7 +222,6 @@
             self.$observe(attrName, function() {
               options.error[key] = attrs[attrName]
             })
-            
           }
 
           for (var key in options.error)
@@ -484,14 +483,14 @@
               }
 
               if (modelState.validateOn.change) {
-                if (TAGS.indexOf(element.prop("tagName")) != -1)
+                if (INPUTS.indexOf(element.prop("tagName")) != -1)
                   element.on("keydown", touch)
                 else
                   element.delegate("INPUT,TEXTAREA", "keyup", touch)
               }
 
               if (modelState.validateOn.blur) {
-                if (TAGS.indexOf(element.prop("tagName")) != -1)
+                if (INPUTS.indexOf(element.prop("tagName")) != -1)
                   element.on("blur", blur)
                 else
                   element.delegate("INPUT,TEXTAREA", "blur", blur)
