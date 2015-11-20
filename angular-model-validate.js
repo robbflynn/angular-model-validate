@@ -464,39 +464,41 @@
       return {
         restrict: "A",
         priority: 1,
-        require: ["ngModel", "^form"],
+        require: ["ngModel", "?^form"],
         link: function (scope, element, attrs, ctrls) {
           var ngModel = ctrls[0]
           var form = ctrls[1]
+          
+          if (form) {
+            $timeout(function() {
+              var modelState = form.$modelValidate.models[attrs.ngModel]
 
-          $timeout(function() {
-            var modelState = form.$modelValidate.models[attrs.ngModel]
+              if (modelState) {
 
-            if (modelState) {
+                var blur = function() {
+                  modelState.blur()
+                }
 
-              var blur = function() {
-                modelState.blur()
+                var touch = function() {
+                  modelState.touch()
+                }
+
+                if (modelState.validateOn.change) {
+                  if (INPUTS.indexOf(element.prop("tagName")) != -1)
+                    element.on("keydown", touch)
+                  else
+                    element.delegate("INPUT,TEXTAREA", "keyup", touch)
+                }
+
+                if (modelState.validateOn.blur) {
+                  if (INPUTS.indexOf(element.prop("tagName")) != -1)
+                    element.on("blur", blur)
+                  else
+                    element.delegate("INPUT,TEXTAREA", "blur", blur)
+                }
               }
-
-              var touch = function() {
-                modelState.touch()
-              }
-
-              if (modelState.validateOn.change) {
-                if (INPUTS.indexOf(element.prop("tagName")) != -1)
-                  element.on("keydown", touch)
-                else
-                  element.delegate("INPUT,TEXTAREA", "keyup", touch)
-              }
-
-              if (modelState.validateOn.blur) {
-                if (INPUTS.indexOf(element.prop("tagName")) != -1)
-                  element.on("blur", blur)
-                else
-                  element.delegate("INPUT,TEXTAREA", "blur", blur)
-              }
-            }
-          })
+            })
+          }
         }
       }
     }
