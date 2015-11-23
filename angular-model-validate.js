@@ -122,8 +122,8 @@
     this.validateOnBlur = validateOn.indexOf("blur") != -1
     this.validateOnInit = validateOn.indexOf("init") != -1
     this.showAllErrors = typeof attrs.mvShowAllErrors != "undefined" || !!element.closest("form[mv-show-all-errors]").length
-    this.validateEmpty = options.validateEmpty || true
-    this.validityName = options.validityName || name
+    this.validateEmpty = this.options.validateEmpty || true
+    this.validityName = this.options.validityName || name
 
     this.modelState = models[attrs.ngModel]
     this.modelsState = models[attrs.ngModels]
@@ -167,7 +167,7 @@
 
   // *************************************
 
-    this.$err = options.$error || $('<div class="validation-invalid"></div>')
+    this.$err = this.options.$error || $('<div class="validation-invalid"></div>')
 
     scope.$on("$destroy", function() {
       self.removeWatchers()
@@ -207,24 +207,24 @@
         self.validateEmpty = typeof attrs[emptyName] === "undefined"
       })
 
-      if (options.error) {
-        if (typeof options.error == "string") {
+      if (this.options.error) {
+        if (typeof this.options.error == "string") {
           attrName = this.buildAttr("Error")
 
           this.$observe(attrName, function() {
-            options.error = attrs[attrName]
-            self.setErrMessage(options.error)
+            self.options.error = attrs[attrName]
+            self.setErrMessage(self.options.error)
           })
-        } else if (typeof options.error == "object") {
+        } else if (typeof this.options.error == "object") {
           var observerError = function(key) {
             var attrName = self.buildAttr("-" + key + "-" + "Error")
             
             self.$observe(attrName, function() {
-              options.error[key] = attrs[attrName]
+              self.options.error[key] = attrs[attrName]
             })
           }
 
-          for (var key in options.error)
+          for (var key in this.options.error)
             observerError(key)
         }
       }
@@ -249,7 +249,7 @@
       if (this.$isEmpty())
         return this.$validationComplete(true)
 
-      this.$validationComplete(options.regexp.test(ngModel.$modelValue))
+      this.$validationComplete(this.options.regexp.test(ngModel.$modelValue))
     }
 
     this.$validationComplete = function(valid) {
@@ -363,16 +363,16 @@
       }
     }
 
-    if (options.validate)
-      this.$validate = options.validate
-    else if (options.regexp)
+    if (this.options.validate)
+      this.$validate = this.options.validate
+    else if (this.options.regexp)
       this.$validate = this.$validateRegexp
 
-    if (options.externalWatchers)
-      options.externalWatchers.call(this, this.validate)
+    if (this.options.externalWatchers)
+      this.options.externalWatchers.call(this, this.validate)
 
-    if (typeof options.error == "string")
-      this.setErrMessage(options.error)
+    if (typeof this.options.error == "string")
+      this.setErrMessage(this.options.error)
 
     this.prepareWatchers()
 
