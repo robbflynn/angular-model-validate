@@ -665,11 +665,11 @@
           if (this.$isEmpty())
             return this.$validationComplete(true)
           
+          var isInteger = typeof this.attrs.mvIsInteger != "undefined"
           var errorMessage = this.options.error.invalid
           var match = isInteger ? /^[+-]?\d+$/.test(modelValue) : /^[+-]?\d+(\.\d+)?$/.test(modelValue)
           var min = parseFloat($parse(this.attrs.mvMin)(this.scope))
           var max = parseFloat($parse(this.attrs.mvMax)(this.scope))
-          var isInteger = this.attrs.mvType || "number"
 
           if (match) {
             if (!isNaN(min) && !isNaN(max) && modelValue < min  && modelValue > max) {
