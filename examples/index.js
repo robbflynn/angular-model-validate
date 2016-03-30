@@ -1,9 +1,12 @@
 angular.module('model-validate', ['modelValidate'])
-  .controller("ExampleController", function($scope) {
+  .controller("ExampleController", function($scope, $timeout) {
     $scope.data = {}
+    $scope.vars = {
+      loading: false
+    }
 
     $scope.func1 = function() {
-      return $scope.data.function1 === "222"
+      return $scope.data.function1 === "111"
     }
 
     $scope.func2 = function(value) {
@@ -11,24 +14,39 @@ angular.module('model-validate', ['modelValidate'])
     }
 
     $scope.func3 = function() {
-      return $scope.data.function1 === "1" && $scope.data.function2 === "2" && $scope.data.function3 === "3"
+      return $scope.data.function1 === "111" && $scope.data.function2 === "222" && $scope.data.function3 === "333"
     }
 
-    $scope.func4 = function(value, values) {
+    var $promise
+
+    $scope.func4 = function(value, values, callback) {
+      if ($promise)
+        $timeout.cancel($promise)
+
+      $scope.vars.loading = true
+      console.log("-1-func4-", $scope.vars.loading)
+
+      $promise = $timeout(function() {
+        $promise = null
+        $scope.vars.loading = false
+        callback(values[2] === "666")
+        console.log("-2-func4-", $scope.vars.loading)
+      }, 1500)
+    }
+
+    $scope.func5 = function(value, values) {
       return values[0] === "1" && values[1] === "1" && values[2] === "1"
     }
 
-    $scope.func5 = function(value, values, callback) {
-      setTimeout(function() {
-        callback(values[2] === "666")
-      }, 1000)
+    $scope.submit1 = function() {
+      console.log("submit1", $scope.form1.$modelValidate)
     }
 
-    $scope.submit = function() {
-      console.log("submit", $scope.myForm.$modelValidate.models)
+    $scope.submit2 = function() {
+      console.log("submit2", $scope.form2.$modelValidate)
     }
 
-    $scope.reset = function() {
-      $scope.myForm.$modelValidate.reset()
+    $scope.submit3 = function() {
+      console.log("submit3", $scope.form3.$modelValidate)
     }
   })

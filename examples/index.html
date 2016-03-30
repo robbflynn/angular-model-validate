@@ -9,44 +9,59 @@
     <div class="container">
       <h1>Model validate</h1>
       <hr>
-      <form name="myForm" class="form-horizontal" novalidate mv-validate-on="change,blur,submit">
+      <h4>Validate form1 on submit</h4>
+      <hr>
+      <form name="form1" class="form-horizontal" novalidate>
+        
+        <div class="row">
+          <div class="col-sm-9 col-sm-offset-3 text-info">
+            Validate only on blur.
+          </div>
+        </div>
 
-        <div class="form-group" ng-model="data.email1" mv="email,required">
-          <label class="col-sm-3 control-label">Email 1</label>
+        <div class="form-group" ng-model="data.email1" mv="email,required" mv-validate-on="blur">
+          <label class="col-sm-3 control-label">Email *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.email1">
           </div>
         </div>
 
-        <div class="form-group" ng-if="data.email1">
+        <div class="form-group">
           <label class="col-sm-3 control-label">Phone</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.phone" mv="phone,required">
+            <input type="text" class="form-control" ng-model="data.phone" mv="phone">
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-sm-9 col-sm-offset-3 text-info">
+            Validate only on change.
+          </div>
+        </div>
         <div class="form-group">
-          <label class="col-sm-3 control-label">String chars</label>
+          <label class="col-sm-3 control-label">String chars *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.string1" mv="string,required" 
-                   mv-max-chars="20"
+                   mv-max-chars="20" mv-min-chars="2" mv-validate-on="change"
                    mv-string-max-chars-error="Max [MAX]" 
                    mv-string-min-chars-error="Min [MIN]"
-                   mv-string-chars-range-error="Range [MIN] and [MAX]"
+                   mv-string-chars-range-error="Range is between [MIN] and [MAX]"
                    >
           </div>
         </div>
 
+        
+
         <div class="form-group">
-          <label class="col-sm-3 control-label">String words</label>
+          <label class="col-sm-3 control-label">String words *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.string2" mv="string,required" 
-                   mv-min-words="2" mv-max-words="4">
+                   mv-validate-on="submit" mv-min-words="2" mv-max-words="4">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Number</label>
+          <label class="col-sm-3 control-label">Number *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.number" mv="number,required" 
                    mv-min="2" mv-max="4"
@@ -59,73 +74,126 @@
         <div class="form-group">
           <label class="col-sm-3 control-label">Integer</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.integer" mv="number,required" 
+            <input type="text" class="form-control" ng-model="data.integer" mv="number" 
                    mv-min="2" mv-max="14"
                    mv-number-range-error="Min [MIN] to [MAX]">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Url</label>
+          <label class="col-sm-3 control-label">Url *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.url" mv="url,required">
           </div>
         </div>
 
-        
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" ng-click="form1.$modelValidate.reset()" class="btn btn-primary">Reset</button>
+            <button type="submit" mv-submit class="btn btn-primary" ng-click="submit1()">Submit</button>
+          </div>
+        </div>
+      </form>
 
-        <hr>
+      <hr>
+      <h4>Validate form2 on change and submit</h4>
+      <hr>
+
+      <form name="form2" class="form-horizontal" novalidate mv-validate-on="change,submit">
+        <div class="row">
+          <div class="col-sm-9 col-sm-offset-3 text-info">
+            Validate passwords equality.
+          </div>
+        </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Password</label>
+          <label class="col-sm-3 control-label">Password *</label>
           <div class="col-sm-9">
             <input type="text" class="form-control" ng-model="data.password" mv="required">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Repeat password</label>
+          <label class="col-sm-3 control-label">Repeat password *</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.rpassword" mv="equal,required" mv-equal="data.password">
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="form-group">
-          <label class="col-sm-3 control-label">Function 1</label>
-          <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.function1" mv="function" mv-function="func1()">
+            <input type="text" class="form-control" ng-model="data.rpassword" 
+                   mv="equal,required" mv-equal="data.password">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Function 2</label>
+          <div class="col-sm-offset-2 col-sm-10">
+            <button type="button" ng-click="form2.$modelValidate.reset()" class="btn btn-primary">Reset</button>
+            <button type="submit" mv-submit class="btn btn-primary" ng-click="submit2()">Submit</button>
+          </div>
+        </div>
+      </form>
+
+      <hr>
+      <h4>Validate form3 on change, blur and submit</h4>
+      <hr>
+
+      <form name="form3" class="form-horizontal" novalidate mv-validate-on="change,blur,submit">
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 1 *</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.function2" mv="function" mv-function="func2">
+            <input type="text" class="form-control" ng-model="data.function1" 
+                   mv="function,required" mv-function="func1()">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="col-sm-3 control-label">Function 3</label>
+          <label class="col-sm-3 control-label">Function 2 *</label>
           <div class="col-sm-9">
-            <input type="text" class="form-control" ng-model="data.function3" mv="function" mv-function="func3()">
+            <input type="text" class="form-control" ng-model="data.function2" 
+                   mv="function,required" mv-function="func2">
           </div>
         </div>
 
-        <span ng-models="data.function1,data.function2,data.function3" mv="function" mv-function="func4">Func4</span>
-        <span ng-models="data.function1,data.function2,data.function3" mv="function" mv-function="func5" mv-function-error="Shit man">Async Func5</span>
+        <div class="row">
+          <div class="col-sm-9 col-sm-offset-3 text-info">
+            Validate only on submit.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 3 *</label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" ng-model="data.function3" 
+                   mv="function,required" mv-validate-on="submit" mv-function="func3()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 4</label>
+          <div class="col-sm-9">
+            <div class="form-control" ng-models="data.function1,data.function2,data.function3" 
+                 mv="function" mv-function="func4" mv-function-error="Custom error message">
+               <span ng-if="!vars.loading">Async validation based on few models with custom error message</span>
+               <span ng-if="vars.loading" class="text-primary">Loading...</span>
+           </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-3 control-label">Function 5</label>
+          <div class="col-sm-9">
+            <div class="form-control" ng-models="data.function1,data.function2,data.function3" 
+                 mv="function" mv-function="func5">
+               Validation based on few models
+           </div>
+          </div>
+        </div>
 
         <hr>
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="button" ng-click="reset()" class="btn btn-primary">Reset</button>
-            <button type="submit" mv-submit class="btn btn-primary" ng-click="submit()">Submit</button>
+            <button type="button" ng-click="form3.$modelValidate.reset()" class="btn btn-primary">Reset</button>
+            <button type="submit" mv-submit class="btn btn-primary" ng-click="submit3()">Submit</button>
           </div>
         </div>
 
       </form>
-      {{data | json}}
     </div>
     <script src="/vendor/jquery.min.js"></script>
     <script src="/vendor/angular.js"></script>

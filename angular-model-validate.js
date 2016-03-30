@@ -75,6 +75,15 @@
         this.attached[i].blur()
     }
 
+    this.focus = function() {
+      if (this.blured) {
+        this.blured = false
+      }
+
+      for (var i = 0; i < this.attached.length; i++)
+        this.attached[i].focus()
+    }
+
     this.touch = function() {
       if (!this.touched) {
         this.touched = true
@@ -259,6 +268,10 @@
         self.addError()
       else 
         self.removeError()
+
+      if (!scope.$$phase) {
+        scope.$apply()
+      }
     }
 
     this.$isActive = function() {
@@ -479,6 +492,10 @@
                   modelState.blur()
                 }
 
+                var focus = function() {
+                  modelState.focus()
+                }
+
                 var touch = function() {
                   modelState.touch()
                 }
@@ -491,10 +508,13 @@
                 }
 
                 if (modelState.validateOn.blur) {
-                  if (INPUTS.indexOf(element.prop("tagName")) != -1)
+                  if (INPUTS.indexOf(element.prop("tagName")) != -1) {
                     element.on("blur", blur)
-                  else
+                    element.on("focus", focus)
+                  } else {
                     element.delegate("INPUT,TEXTAREA", "blur", blur)
+                    element.delegate("INPUT,TEXTAREA", "focus", focus)
+                  }
                 }
               }
             })
@@ -703,7 +723,10 @@
           if (typeof match == "boolean") {
             this.$validationComplete(match)
           } else if (typeof match == "function") {
-            var result = match(modelValue, modelsValues, this.$validationComplete)
+            var self = this
+            var result = match(modelValue, modelsValues, function() {
+              self.$validationComplete.call(self)
+            })
             this.form.$setValidity(this.validityName, false)
             if (typeof result == "boolean")
               this.$validationComplete(result)
