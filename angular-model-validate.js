@@ -602,7 +602,7 @@
   // *************************************** CONFIGURATION ************************************
   // ******************************************************************************************
 
-  mv.config(function($modelValidateProvider) {
+  mv.config(['$modelValidateProvider', function($modelValidateProvider) {
     var defaultConfig = {
       required: {
         error: "Required.",
@@ -751,6 +751,6 @@
     }
 
     $modelValidateProvider.setConfiguration(defaultConfig)
-  })
+  }])
 
 })();
