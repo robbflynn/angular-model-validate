@@ -24,13 +24,12 @@ angular.module('model-validate', ['modelValidate'])
         $timeout.cancel($promise)
 
       $scope.vars.loading = true
-      console.log("-1-func4-", $scope.vars.loading)
 
       $promise = $timeout(function() {
         $promise = null
         $scope.vars.loading = false
+        
         callback(values[2] === "666")
-        console.log("-2-func4-", $scope.vars.loading)
       }, 1500)
     }
 
