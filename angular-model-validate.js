@@ -9,6 +9,21 @@
 
   var INPUTS = ["INPUT", "TEXTAREA"]
 
+  var softExtend = function(destination, source) {
+    for (var key in source) {
+      if (typeof source[key] === "object") {
+
+        if (!destination[key]) {
+          destination[key] = source[key]
+        } else {
+          softExtend(destination[key], source[key])
+        }
+      } else {
+        destination[key] = source[key]
+      }
+    }
+  }
+  
   var ModelState = function(model) {
     this.model = model
     this.touched = false 
@@ -402,7 +417,7 @@
     var config = { }
 
     this.setConfiguration = function(c) {
-      angular.extend(config, c);
+      softExtend(config, c);
     }
 
     this.getConfiguration = function(name) {
