@@ -192,6 +192,7 @@
   // *************************************
 
     this.$err = this.options.$error || $('<div class="validation-invalid"></div>')
+    this.$errMsg = this.options.$msgContainerSelector ? this.$err.find(this.options.$msgContainerSelector) : this.$err
 
     scope.$on("$destroy", function() {
       self.removeWatchers()
@@ -327,7 +328,7 @@
     }
 
     this.setErrMessage = function(msg) {
-      this.$err.html(msg)
+      this.$errMsg.html(msg)
     }
 
     this.reset = function() {

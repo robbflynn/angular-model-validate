@@ -1,7 +1,7 @@
 {
   "name": "angular-model-validate",
   "private": false,
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Model based validations",
   "author": "Pavel Dobrev",
   "directories": {
