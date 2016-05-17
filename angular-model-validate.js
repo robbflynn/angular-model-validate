@@ -260,7 +260,7 @@
 
       self.$validate.call(
         self,
-        ngModel ? ngModel.$modelValue : null,
+        ngModel ? $parse(attrs.ngModel)(scope) : null,
         ngModels ? ngModels.$modelsValues : null
       )
     }
